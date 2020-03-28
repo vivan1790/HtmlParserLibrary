@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <com.library.htmlparser.HtmlParserView
+            android:id="@+id/html_parser_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:themeToken="tutorial"/>
+
+        <TextView
+            android:id="@+id/debug_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_blue_dark"
+            android:textColor="@android:color/white"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+</ScrollView>

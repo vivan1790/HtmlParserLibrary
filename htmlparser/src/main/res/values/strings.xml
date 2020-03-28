@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_html_null_or_empty">HtmlContent is either null or empty!</string>
+</resources>

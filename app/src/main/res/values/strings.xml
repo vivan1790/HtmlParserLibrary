@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">HtmlParserAppSample</string>
+    <string name="content_load_error">Something went wrong</string>
+</resources>

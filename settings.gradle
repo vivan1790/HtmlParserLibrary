@@ -1,0 +1,3 @@
+rootProject.name='HTMLParserApp'
+include ':app'
+include ':htmlparser'
