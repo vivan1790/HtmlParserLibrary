@@ -10,8 +10,7 @@ import retrofit2.Response
 class STTutorialContentViewModel : ViewModel() {
     val tutorialContentLiveData : MutableLiveData<String> = MutableLiveData()
     val tutorialLoadErrorLiveData : MutableLiveData<Boolean> = MutableLiveData()
-    private val tutorialContentService =
-        STTutorialService()
+    private val tutorialContentService = STTutorialService()
 
     @SuppressLint("CheckResult")
     fun getTutorialContent(subject : String, tutorial : String) {

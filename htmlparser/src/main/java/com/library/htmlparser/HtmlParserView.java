@@ -93,6 +93,7 @@ public class HtmlParserView extends LinearLayout
     }
 
     public void parseHTMLContent(HtmlContent htmlContent) {
+        clear();
         if (listeners != null) {
             for (OnParsingListener listener : listeners) {
                 listener.onParsingStarted(this);

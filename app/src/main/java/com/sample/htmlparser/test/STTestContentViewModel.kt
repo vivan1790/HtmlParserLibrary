@@ -23,7 +23,7 @@ class STTestContentViewModel : ViewModel() {
 
                     override fun onResponse(call: Call<String>, response: Response<String>) {
                         //println("VIVAN message is ${response.message()} body is ${response.body()?.length}  ... ${response.isSuccessful}")
-                        testContentLiveData.value = response?.body()
+                        testContentLiveData.value = response.body()
                         testLoadErrorLiveData.value = false
                     }
 

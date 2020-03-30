@@ -35,7 +35,6 @@ class ArticleContentViewModel : ViewModel() {
                     override fun onError(e: Throwable) {
                         contentLoadErrorLiveData.value = true
                     }
-
                 })
     }
 

@@ -47,14 +47,14 @@ class ArticleContentActivity : AppCompatActivity(),
         subscribeToSTTutorialModel(subject, tutorial)
 
         // Studytonight test
-        val testSubject = "java"
-        val testIndex = "1"
+        //val testSubject = "java"
+        //val testIndex = "1"
         //subscribeToSTTestModel(testSubject, testIndex)
 
         // Curious Article
         // 760, 289 : Text article
         // 148 : Video article
-        val bid = "148";
+        //val bid = "148";
         //subscribeToCuriousArticleModel(bid)
     }
 
