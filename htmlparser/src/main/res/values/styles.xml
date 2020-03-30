@@ -4,6 +4,8 @@
         <attr name="themeToken" format="string"/>
     </declare-styleable>
 
+    <style name="ActivityTheme" parent="Theme.AppCompat.Light.NoActionBar"/>
+
     <style name="tag_br" parent="tag_space"/>
 
     <style name="tag_code" parent="text_style_default">
