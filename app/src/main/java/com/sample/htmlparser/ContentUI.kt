@@ -41,7 +41,7 @@ class ArticleContentActivity : AppCompatActivity(),
         // youtube example : https://www.studytonight.com/dbms/database-normalization
 
         val subject = "c"
-        val tutorial = "pointers-to-structure-in-c.php"
+        val tutorial = "pointer-to-pointer.php"
         subscribeToSTTutorialModel(subject, tutorial)
 
         // Studytonight test

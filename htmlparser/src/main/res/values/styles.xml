@@ -42,10 +42,7 @@
         <item name="android:padding">12dp</item>
     </style>
 
-    <style name="tag_header">
-        <item name="android:background">@android:color/white</item>
-        <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textColor">@android:color/black</item>
+    <style name="tag_header" parent="text_style_default">
         <item name="android:textSize">24dp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:paddingTop">16dp</item>
@@ -68,7 +65,6 @@
     <style name="tag_pre" parent="text_style_default"/>
 
     <style name="text_style_default">
-        <item name="android:background">@android:color/transparent</item>
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">16dp</item>
@@ -83,7 +79,6 @@
     <style name="tag_space">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">16dp</item>
-        <item name="android:background">@android:color/holo_blue_dark</item>
     </style>
 
     <style name="tag_table">

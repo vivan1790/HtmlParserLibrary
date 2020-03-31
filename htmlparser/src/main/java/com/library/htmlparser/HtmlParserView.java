@@ -285,7 +285,10 @@ public class HtmlParserView extends LinearLayout
                     codeSpanned.append(element.text());
                 }
                 nodeText.append(codeSpanned);
+                addTextInParent(nodeText, parent);
+                break;
             default:
+                nodeText.append(Html.fromHtml(element.toString(), Html.FROM_HTML_MODE_LEGACY));
                 addTextInParent(nodeText, parent);
         }
     }
