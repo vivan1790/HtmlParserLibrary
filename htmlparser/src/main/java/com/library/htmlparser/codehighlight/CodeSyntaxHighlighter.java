@@ -9,10 +9,6 @@ import android.text.Spanned;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
-
 import io.github.kbiakov.codeview.highlight.CodeHighlighter;
 import io.github.kbiakov.codeview.highlight.ColorThemeData;
 import io.github.kbiakov.codeview.highlight.SyntaxColors;
@@ -58,19 +54,6 @@ public class CodeSyntaxHighlighter extends AsyncTask<String, Void, Spanned> {
         codeTextView.setText(spanned);
         codeLayout.addView(codeTextView);
         codeLayout.setBackgroundColor(getApplicableColor(codeSyntaxTheme.background));
-    }
-
-    private SpannableStringBuilder convert(String htmlText) {
-        SpannableStringBuilder text = new SpannableStringBuilder();
-        Element element = Jsoup.parse("<body>" + htmlText + "</body>").body();
-        for (Node node : element.childNodes()) {
-            if (node instanceof Element && node.nodeName().equals("font")) {
-                text.append(Html.fromHtml(node.toString(), Html.FROM_HTML_MODE_LEGACY));
-            } else {
-                text.append(node.toString());
-            }
-        }
-        return text;
     }
 
     private int getApplicableColor(int value) {
