@@ -8,28 +8,24 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.library.htmlparser.HtmlContent
 import com.library.htmlparser.HtmlParserView
 import com.library.htmlparser.codehighlight.CodeSyntaxTheme
 import com.sample.htmlparser.article.ArticleContent
-import com.sample.htmlparser.article.ArticleContentViewModel
-import com.sample.htmlparser.test.STTestContentViewModel
-import com.sample.htmlparser.tutorial.STTutorialContentViewModel
+import com.sample.htmlparser.article.ArticleViewModel
+import com.sample.htmlparser.test.TestViewModel
+import com.sample.htmlparser.tutorial.TutorialViewModel
 
 class ArticleContentActivity : AppCompatActivity(),
     HtmlParserView.OnParsingListener {
 
-    companion object {
-        fun getIntent(context : Context) : Intent =
-                Intent(context, ArticleContentActivity :: class.java)
-    }
-
     private lateinit var htmlParserView: HtmlParserView
     private lateinit var debugTextView : TextView
-    private lateinit var articleContentViewModel: ArticleContentViewModel
-    private lateinit var stTutorialContentViewModel: STTutorialContentViewModel
-    private lateinit var stTestContentViewModel: STTestContentViewModel
+    private lateinit var articleViewModel: ArticleViewModel
+    private lateinit var tutorialViewModel: TutorialViewModel
+    private lateinit var testViewModel: TestViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +33,8 @@ class ArticleContentActivity : AppCompatActivity(),
         htmlParserView = findViewById(R.id.html_parser_view)
         debugTextView = findViewById(R.id.debug_view)
         initHtmlParserView()
+        tutorialViewModel = ViewModelProvider(this)
+            .get(TutorialViewModel:: class.java)
 
         // Studytonight tutorial
         // iframe example : https://www.studytonight.com/python/exception-handling-python
@@ -71,14 +69,12 @@ class ArticleContentActivity : AppCompatActivity(),
         val radioGroupClasses = HashSet<String>()
         radioGroupClasses.add("quiz")
         htmlParserView.radioGroupClasses = radioGroupClasses
+        htmlParserView.registerOnParsingListener(this)
     }
 
     private fun subscribeToSTTutorialModel(subject : String, tutorial : String) {
-        htmlParserView.registerOnParsingListener(this)
-        stTutorialContentViewModel = ViewModelProviders.of(this)
-                .get(STTutorialContentViewModel:: class.java)
-        stTutorialContentViewModel.getTutorialContent(subject, tutorial)
-        stTutorialContentViewModel.tutorialContentLiveData.observe(this, Observer<String> {
+        tutorialViewModel.getTutorialContent(subject, tutorial)
+        tutorialViewModel.tutorialContentLiveData.observe(this, Observer<String> {
             htmlParserView.clear()
             val htmlContent = HtmlContent.Builder(it)
                 .withBaseUrl("https://www.studytonight.com/$subject")
@@ -87,20 +83,14 @@ class ArticleContentActivity : AppCompatActivity(),
                 .build()
             htmlParserView.parseHTMLContent(htmlContent)
         })
-        stTutorialContentViewModel.tutorialLoadErrorLiveData.observe(this, Observer<Boolean> {
-            if (it) {
-                Toast.makeText(this,
-                        getString(R.string.content_load_error), Toast.LENGTH_SHORT).show()
-            }
-        })
     }
 
     private fun subscribeToSTTestModel(subject : String, testIndex : String) {
         htmlParserView.registerOnParsingListener(this)
-        stTestContentViewModel = ViewModelProviders.of(this)
-            .get(STTestContentViewModel:: class.java)
-        stTestContentViewModel.getTestContent(subject, testIndex)
-        stTestContentViewModel.testContentLiveData.observe(this, Observer<String> {
+        testViewModel = ViewModelProviders.of(this)
+            .get(TestViewModel:: class.java)
+        testViewModel.getTestContent(subject, testIndex)
+        testViewModel.testContentLiveData.observe(this, Observer<String> {
             htmlParserView.clear()
             val htmlContent = HtmlContent.Builder(it)
                 .withBaseUrl("https://www.studytonight.com/$subject/tests")
@@ -109,19 +99,13 @@ class ArticleContentActivity : AppCompatActivity(),
                 .build()
             htmlParserView.parseHTMLContent(htmlContent)
         })
-        stTestContentViewModel.testLoadErrorLiveData.observe(this, Observer<Boolean> {
-            if (it) {
-                Toast.makeText(this,
-                    getString(R.string.content_load_error), Toast.LENGTH_SHORT).show()
-            }
-        })
     }
 
     private fun subscribeToCuriousArticleModel(bid : String) {
-        articleContentViewModel = ViewModelProviders.of(this)
-            .get(ArticleContentViewModel:: class.java)
-        articleContentViewModel.getArticleContent(bid)
-        articleContentViewModel.articleContentLiveData
+        articleViewModel = ViewModelProviders.of(this)
+            .get(ArticleViewModel:: class.java)
+        articleViewModel.getArticleContent(bid)
+        articleViewModel.articleContentLiveData
             .observe(this, Observer<ArticleContent> {
                 val articleBody : String
                 articleBody = if ("V" == it.articleType) {
@@ -136,13 +120,6 @@ class ArticleContentActivity : AppCompatActivity(),
                 htmlParserView.parseHTMLContent(htmlContent)
 
             })
-        articleContentViewModel.contentLoadErrorLiveData
-            .observe(this, Observer<Boolean> {
-                if (it) {
-                    Toast.makeText(this,
-                        getString(R.string.content_load_error), Toast.LENGTH_SHORT).show()
-                }
-            })
     }
 
     override fun onParsingStarted(parserView: HtmlParserView?) {
@@ -154,7 +131,7 @@ class ArticleContentActivity : AppCompatActivity(),
     override fun onParsingSuccessful(parserView: HtmlParserView?) {
         val imageUrls = parserView?.imageUrls
         if (imageUrls != null) {
-            for (url in imageUrls) println("VIVAN VIVAN * $url")
+            for (url in imageUrls) println("image url = * $url")
         }
         val viewGroups = parserView?.findViewGroupsByHtmlTagClassName("quiz_answer_holder")
         if (viewGroups != null) {
