@@ -351,6 +351,8 @@ public class HtmlParserView extends LinearLayout
         }
         if (id != 0) {
             context = new ContextThemeWrapper(parent.getContext(), id);
+        } else {
+            context = new ContextThemeWrapper(parent.getContext(), R.style.textStyleDefault);
         }
         return context;
     }
