@@ -44,14 +44,14 @@ class ArticleContentActivity : AppCompatActivity(),
         // iframe example : https://www.studytonight.com/python/exception-handling-python
         // youtube example : https://www.studytonight.com/dbms/database-normalization
 
-//        val subject = "data-structures"
-//        val tutorial = "bubble-sort"
-//        subscribeToSTTutorialModel(subject, tutorial)
+        val subject = "data-structures"
+        val tutorial = "bubble-sort"
+        subscribeToSTTutorialModel(subject, tutorial)
 
         // Studytonight test
-        val testSubject = "java"
-        val testIndex = "1"
-        subscribeToSTTestModel(testSubject, testIndex)
+//        val testSubject = "java"
+//        val testIndex = "1"
+//        subscribeToSTTestModel(testSubject, testIndex)
 
         // Curious Article
         // 760, 289 : Text article

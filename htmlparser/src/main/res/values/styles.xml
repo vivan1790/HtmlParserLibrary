@@ -6,6 +6,7 @@
     <style name="tag_br" parent="spaceStyleDefault"/>
 
     <style name="tag_code">
+        <item name="android:fontFamily">monospace</item>
         <item name="android:padding">8dp</item>
     </style>
 

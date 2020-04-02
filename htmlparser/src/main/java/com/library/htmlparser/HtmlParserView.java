@@ -284,7 +284,7 @@ public class HtmlParserView extends LinearLayout
                             element.className().replace("language-", ""),
                             currentHtmlContent.getCodeSyntaxTheme());
                     codeSyntaxHighlighter.execute(element.text());
-                    CodeTextView codeTextView = new CodeTextView(getContext());
+                    CodeTextView codeTextView = new CodeTextView(context);
                     codeSyntaxHighlighter.registerOnParsingListener(codeTextView);
                     codeLayout.addView(codeTextView);
                     textViews.add(codeTextView);
