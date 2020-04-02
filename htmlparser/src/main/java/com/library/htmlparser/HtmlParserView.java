@@ -1,7 +1,6 @@
 package com.library.htmlparser;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
@@ -23,7 +22,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.library.htmlparser.codehighlight.CodeSyntaxHighlighter;
-import com.library.htmlparser.codehighlight.CodeSyntaxTheme;
+import com.library.htmlparser.codehighlight.CodeTextView;
 import com.library.htmlparser.iframe.HtmlIFrameLayout;
 import com.library.htmlparser.image.HtmlImageView;
 import com.library.htmlparser.radio.HtmlRadioGroup;
@@ -54,36 +53,22 @@ public class HtmlParserView extends LinearLayout
         void onParsingFailed(HtmlParserView parserView, String errorMessage);
     }
 
-    private enum SearchType {
-        TAG_ID, TAG_CLASS, TAG_NAME
-    }
-
     private HtmlContent currentHtmlContent;
-    private String themeTokenName = null;
-
+    private StyleHandler styleHandler;
     private Set<OnParsingListener> listeners = new HashSet<>();
 
     private Set<String> imageUrls = new HashSet<>();
-    private Set<String> radioGroupClasses = null;
     private List<ViewGroup> viewGroupList = new ArrayList<>();
-
-    private CodeSyntaxTheme codeSyntaxTheme = CodeSyntaxTheme.DEFAULT;
+    private Set<TextView> textViews = new HashSet<>();
 
     public HtmlParserView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        initialize(context, attrs);
+        this.setOrientation(LinearLayout.VERTICAL);
     }
 
     public HtmlParserView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initialize(context, attrs);
-    }
-
-    private void initialize(Context context, @Nullable AttributeSet attrs) {
         this.setOrientation(LinearLayout.VERTICAL);
-        TypedArray values = context.obtainStyledAttributes(attrs, R.styleable.HtmlParserView);
-        themeTokenName = values.getString(R.styleable.HtmlParserView_themeToken);
-        values.recycle();
     }
 
     public void clear() {
@@ -99,7 +84,7 @@ public class HtmlParserView extends LinearLayout
                 listener.onParsingStarted(this);
             }
         }
-        if (htmlContent == null || htmlContent.getHtmlContent() == null) {
+        if (htmlContent == null || htmlContent.getHtmlText() == null) {
             if (listeners != null) {
                 for (OnParsingListener listener : listeners) {
                     listener.onParsingFailed(this,
@@ -109,8 +94,9 @@ public class HtmlParserView extends LinearLayout
             return;
         }
         this.currentHtmlContent = htmlContent;
+        styleHandler = new StyleHandler(getContext(), currentHtmlContent.getStyleToken());
         try {
-            Document document = Jsoup.parse(htmlContent.getHtmlContent());
+            Document document = Jsoup.parse(htmlContent.getHtmlText());
             Element initialElement = (htmlContent.getInitialElementTagId() != null) ?
                     document.getElementById(htmlContent.getInitialElementTagId()) : document.body();
             parse(initialElement, this);
@@ -129,39 +115,29 @@ public class HtmlParserView extends LinearLayout
         }
     }
 
-    private void parse(Element element, final ViewGroup parent) {
-        if (element.childNodeSize() > 0) {
-            for (Node node : element.childNodes()) {
-                if (node instanceof Element) {
-                    Element nodeElement = (Element) node;
-                    if (isRadioGroupClass(nodeElement)) {
-                        HtmlRadioGroup layout = new HtmlRadioGroup(
-                                getThemeWrappedContext(nodeElement, parent), null);
-                        parseRadioGroupElement((Element) node, layout);
-                        parent.addView(layout);
-                        layout.setTag(nodeElement);
-                    } else if (nodeElement.isBlock()) {
-                        parseBlockElement(nodeElement, parent);
-                    } else {
-                        parseNonBlockElement(nodeElement, parent);
-                    }
-                } else {
-                    SpannableStringBuilder nodeText = new SpannableStringBuilder(node.outerHtml());
-                    addTextInParent(nodeText, parent);
-                }
-            }
+    public void scaleTextSize(float scaleFactor) {
+        float scaleDensity = getResources().getDisplayMetrics().scaledDensity;
+        for (TextView textView : textViews) {
+            float newSize = scaleFactor * textView.getTextSize() / scaleDensity;
+            textView.setTextSize(newSize);
         }
     }
 
-    private void addTextInParent(Spanned spannedText, final ViewGroup parent) {
+    private void addTextInParent(Spanned spannedText, final ViewGroup parent,
+                                 int parentStyleResId) {
         int childCount = parent.getChildCount();
         if (childCount == 0 ||
                 !(parent.getChildAt(childCount - 1) instanceof TextView)) {
             if (!spannedText.toString().trim().isEmpty()) {
-                TextView textView = new TextView(parent.getContext(), null, 0);
+                TextView textView = new TextView(getThemeContext(
+                        getContext(), styleHandler.getDefaultTextStyleResId()), null, 0);
                 textView.setBackgroundColor(Color.TRANSPARENT);
                 parent.addView(textView);
                 textView.setText(spannedText);
+                if (parentStyleResId != 0) {
+                    textView.setTextAppearance(parentStyleResId);
+                }
+                textViews.add(textView);
             }
         } else {
             TextView textView = (TextView) parent.getChildAt(childCount - 1);
@@ -172,8 +148,34 @@ public class HtmlParserView extends LinearLayout
         }
     }
 
+    private void parse(Element element, final ViewGroup parent) {
+        if (element.childNodeSize() > 0) {
+            for (Node node : element.childNodes()) {
+                if (node instanceof Element) {
+                    Element nodeElement = (Element) node;
+                    if (isRadioGroupClass(nodeElement)) {
+                        int elementStyleResId = styleHandler.findStyleResourceId(nodeElement);
+                        HtmlRadioGroup layout = new HtmlRadioGroup(
+                                getThemeContext(getContext(), elementStyleResId), null);
+                        parseRadioGroupElement((Element) node, layout);
+                        parent.addView(layout);
+                        layout.setTag(nodeElement);
+                    } else if (nodeElement.isBlock()) {
+                        parseBlockElement(nodeElement, parent);
+                    } else {
+                        parseNonBlockElement(nodeElement, parent);
+                    }
+                } else {
+                    SpannableStringBuilder nodeText = new SpannableStringBuilder(node.outerHtml());
+                    addTextInParent(nodeText, parent, styleHandler.findStyleResourceId(element));
+                }
+            }
+        }
+    }
+
     private void parseBlockElement(Element element, final ViewGroup parent) {
-        Context context = getThemeWrappedContext(element, parent);
+        int elementStyleResId = styleHandler.findStyleResourceId(element);
+        Context context = getThemeContext(getContext(), elementStyleResId);
         ViewGroup layout;
         switch (element.tagName()) {
             case "li":
@@ -245,7 +247,8 @@ public class HtmlParserView extends LinearLayout
     }
 
     private void parseNonBlockElement(Element element, final ViewGroup parent) {
-        Context context = getThemeWrappedContext(element, parent);
+        int elementStyleResId = styleHandler.findStyleResourceId(element);
+        Context context = getThemeContext(getContext(), elementStyleResId);
         SpannableStringBuilder nodeText = new SpannableStringBuilder();
         switch(element.tagName()) {
             case "br":
@@ -269,15 +272,22 @@ public class HtmlParserView extends LinearLayout
                 if (element.className().isEmpty()) {
                     codeSpanned.append(element.text());
                     ForegroundColorSpan foregroundSpan = new ForegroundColorSpan(
-                            codeSyntaxTheme.getUnclassifiedTextColor());
+                            currentHtmlContent.getCodeSyntaxTheme().getUnclassifiedTextColor());
                     codeSpanned.setSpan(foregroundSpan, 0, codeSpanned.length(),
                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 } else if (element.className().contains("language")) {
-                    addTextInParent(nodeText, parent);
+                    addTextInParent(nodeText, parent, elementStyleResId);
                     ViewGroup codeLayout = new LinearLayout(context, null, 0);
-                    new CodeSyntaxHighlighter(codeLayout,
+                    codeLayout.setBackgroundColor(getApplicableColor(
+                            currentHtmlContent.getCodeSyntaxTheme().getBackgroundColor()));
+                    CodeSyntaxHighlighter codeSyntaxHighlighter = new CodeSyntaxHighlighter(
                             element.className().replace("language-", ""),
-                            codeSyntaxTheme).execute(element.text());
+                            currentHtmlContent.getCodeSyntaxTheme());
+                    codeSyntaxHighlighter.execute(element.text());
+                    CodeTextView codeTextView = new CodeTextView(getContext());
+                    codeSyntaxHighlighter.registerOnParsingListener(codeTextView);
+                    codeLayout.addView(codeTextView);
+                    textViews.add(codeTextView);
                     parent.addView(codeLayout);
                     codeLayout.setTag(element);
                     break;
@@ -285,11 +295,11 @@ public class HtmlParserView extends LinearLayout
                     codeSpanned.append(element.text());
                 }
                 nodeText.append(codeSpanned);
-                addTextInParent(nodeText, parent);
+                addTextInParent(nodeText, parent, elementStyleResId);
                 break;
             default:
                 nodeText.append(Html.fromHtml(element.toString(), Html.FROM_HTML_MODE_LEGACY));
-                addTextInParent(nodeText, parent);
+                addTextInParent(nodeText, parent, elementStyleResId);
         }
     }
 
@@ -307,7 +317,8 @@ public class HtmlParserView extends LinearLayout
             }
             if (inputNode != null && labelNode != null
                     && labelNode.attr("for").equals(inputNode.attr("id"))) {
-                final HtmlRadioLabelLayout labelLayout = new HtmlRadioLabelLayout(parent.getContext());
+                final HtmlRadioLabelLayout labelLayout = new HtmlRadioLabelLayout(
+                        getContext(), styleHandler.getDefaultTextStyleResId());
                 parent.addView(labelLayout);
                 parent.registerCompoundButton(labelLayout.getRadioButton());
                 SpannableStringBuilder labelText = new SpannableStringBuilder(
@@ -320,74 +331,22 @@ public class HtmlParserView extends LinearLayout
                                     }
                                 }, null));
                 labelLayout.setLabel(labelText);
+                textViews.add(labelLayout.getRadioButton());
             }
         }
     }
 
     private boolean isRadioGroupClass(Element element) {
-        return (radioGroupClasses != null && (radioGroupClasses.contains(element.className())));
+        return (currentHtmlContent.getRadioGroupClasses() != null
+                && (currentHtmlContent.getRadioGroupClasses().contains(element.className())));
     }
 
-    private Context getThemeWrappedContext(Element element, final ViewGroup parent) {
-        Context context = parent.getContext();
-        int id = 0;
-        if (themeTokenName != null && !themeTokenName.isEmpty()) {
-            id = findStyleResId(context, SearchType.TAG_ID, element.id(), true);
-            if (id == 0) {
-                id = findStyleResId(context, SearchType.TAG_CLASS, element.className(), true);
-            }
-            if (id == 0) {
-                id = findStyleResId(context, SearchType.TAG_NAME, element.tagName(), true);
-            }
-        }
-        if (id == 0) {
-            id = findStyleResId(context, SearchType.TAG_ID, element.id(), false);
-            if (id == 0) {
-                id = findStyleResId(context, SearchType.TAG_CLASS, element.className(), false);
-            }
-            if (id == 0) {
-                id = findStyleResId(context, SearchType.TAG_NAME, element.tagName(), false);
-            }
-        }
-        if (id != 0) {
-            context = new ContextThemeWrapper(parent.getContext(), id);
-        } else {
-            context = new ContextThemeWrapper(parent.getContext(), R.style.textStyleDefault);
-        }
-        return context;
-    }
-
-    private int findStyleResId(Context context, SearchType searchType,
-                               String searchParam, boolean searchByThemToken) {
-        StringBuilder resName = new StringBuilder();
-        if (searchByThemToken) {
-            resName.append(themeTokenName).append("__");
-        }
-        switch (searchType) {
-            case TAG_ID:
-                resName.append("id_");
-                break;
-            case TAG_CLASS:
-                resName.append("class_");
-                break;
-            case TAG_NAME:
-                resName.append("tag_");
-        }
-        resName.append(searchParam.replaceAll("-", "_"));
-        return context.getResources().getIdentifier(resName.toString(), "style",
-                context.getPackageName());
+    private Context getThemeContext(Context context, int resourceId) {
+        return new ContextThemeWrapper(context, resourceId);
     }
 
     public Set<String> getImageUrls() {
         return imageUrls;
-    }
-
-    public Set<String> getRadioGroupClasses() {
-        return radioGroupClasses;
-    }
-
-    public void setRadioGroupClasses(Set<String> radioGroupClasses) {
-        this.radioGroupClasses = radioGroupClasses;
     }
 
     @Override
@@ -419,10 +378,6 @@ public class HtmlParserView extends LinearLayout
         viewGroupList.clear();
         traverseAndAddToList(SearchType.TAG_CLASS, className, this);
         return viewGroupList;
-    }
-
-    public void setCodeSyntaxTheme(CodeSyntaxTheme codeSyntaxTheme) {
-        this.codeSyntaxTheme = codeSyntaxTheme;
     }
 
     private void traverseAndAddToList(SearchType searchType, String searchParam,
@@ -473,5 +428,10 @@ public class HtmlParserView extends LinearLayout
             }
         }
         return imageUrl;
+    }
+
+    private int getApplicableColor(int value) {
+        String hexValue = Integer.toHexString(value);
+        return Color.parseColor("#" + hexValue);
     }
 }

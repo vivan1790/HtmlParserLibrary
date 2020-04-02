@@ -1,15 +1,13 @@
 package com.sample.htmlparser
 
-import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.library.htmlparser.HtmlContent
 import com.library.htmlparser.HtmlParserView
 import com.library.htmlparser.codehighlight.CodeSyntaxTheme
@@ -23,6 +21,7 @@ class ArticleContentActivity : AppCompatActivity(),
 
     private lateinit var htmlParserView: HtmlParserView
     private lateinit var debugTextView : TextView
+    private lateinit var scaleTextButton : View
     private lateinit var articleViewModel: ArticleViewModel
     private lateinit var tutorialViewModel: TutorialViewModel
     private lateinit var testViewModel: TestViewModel
@@ -31,23 +30,28 @@ class ArticleContentActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_article_content)
         htmlParserView = findViewById(R.id.html_parser_view)
+        htmlParserView.registerOnParsingListener(this)
         debugTextView = findViewById(R.id.debug_view)
-        initHtmlParserView()
-        tutorialViewModel = ViewModelProvider(this)
-            .get(TutorialViewModel:: class.java)
+        scaleTextButton = findViewById(R.id.scaleTextButton)
+        scaleTextButton.setOnClickListener {
+            htmlParserView.scaleTextSize(1.5f)
+        }
+        tutorialViewModel = ViewModelProvider(this).get(TutorialViewModel:: class.java)
+        testViewModel = ViewModelProvider(this).get(TestViewModel:: class.java)
+        articleViewModel = ViewModelProvider(this).get(ArticleViewModel:: class.java)
 
         // Studytonight tutorial
         // iframe example : https://www.studytonight.com/python/exception-handling-python
         // youtube example : https://www.studytonight.com/dbms/database-normalization
 
-        val subject = "c"
-        val tutorial = "pointer-to-pointer.php"
-        subscribeToSTTutorialModel(subject, tutorial)
+//        val subject = "data-structures"
+//        val tutorial = "bubble-sort"
+//        subscribeToSTTutorialModel(subject, tutorial)
 
         // Studytonight test
-        //val testSubject = "java"
-        //val testIndex = "1"
-        //subscribeToSTTestModel(testSubject, testIndex)
+        val testSubject = "java"
+        val testIndex = "1"
+        subscribeToSTTestModel(testSubject, testIndex)
 
         // Curious Article
         // 760, 289 : Text article
@@ -61,18 +65,10 @@ class ArticleContentActivity : AppCompatActivity(),
         htmlParserView.unRegisterOnParsingListener(this)
     }
 
-    private fun initHtmlParserView() {
-        htmlParserView.setCodeSyntaxTheme(
-            CodeSyntaxTheme.CodeSyntaxThemeBuilder(CodeSyntaxTheme.DARK)
-                .withUnclassifiedColor(Color.RED)
-                .build())
-        val radioGroupClasses = HashSet<String>()
-        radioGroupClasses.add("quiz")
-        htmlParserView.radioGroupClasses = radioGroupClasses
-        htmlParserView.registerOnParsingListener(this)
-    }
-
     private fun subscribeToSTTutorialModel(subject : String, tutorial : String) {
+        val codeSyntaxTheme = CodeSyntaxTheme.CodeSyntaxThemeBuilder(CodeSyntaxTheme.DARK)
+            .withUnclassifiedColor(Color.RED)
+            .build()
         tutorialViewModel.getTutorialContent(subject, tutorial)
         tutorialViewModel.tutorialContentLiveData.observe(this, Observer<String> {
             htmlParserView.clear()
@@ -80,15 +76,19 @@ class ArticleContentActivity : AppCompatActivity(),
                 .withBaseUrl("https://www.studytonight.com/$subject")
                 .withEndPoint(tutorial)
                 .withInitialElementTagId("body-content")
+                .withStyleToken("tutorial")
+                .withCodeSyntaxTheme(codeSyntaxTheme)
                 .build()
             htmlParserView.parseHTMLContent(htmlContent)
         })
     }
 
     private fun subscribeToSTTestModel(subject : String, testIndex : String) {
-        htmlParserView.registerOnParsingListener(this)
-        testViewModel = ViewModelProviders.of(this)
-            .get(TestViewModel:: class.java)
+        val codeSyntaxTheme = CodeSyntaxTheme.CodeSyntaxThemeBuilder(CodeSyntaxTheme.DARK)
+            .withUnclassifiedColor(Color.RED)
+            .build()
+        val radioGroupClasses = HashSet<String>()
+        radioGroupClasses.add("quiz")
         testViewModel.getTestContent(subject, testIndex)
         testViewModel.testContentLiveData.observe(this, Observer<String> {
             htmlParserView.clear()
@@ -96,14 +96,18 @@ class ArticleContentActivity : AppCompatActivity(),
                 .withBaseUrl("https://www.studytonight.com/$subject/tests")
                 .withEndPoint(testIndex)
                 .withInitialElementTagId("quiz_container")
+                .withStyleToken("test")
+                .withCodeSyntaxTheme(codeSyntaxTheme)
+                .withRadioGroupClasses(radioGroupClasses)
                 .build()
             htmlParserView.parseHTMLContent(htmlContent)
         })
     }
 
     private fun subscribeToCuriousArticleModel(bid : String) {
-        articleViewModel = ViewModelProviders.of(this)
-            .get(ArticleViewModel:: class.java)
+        val codeSyntaxTheme = CodeSyntaxTheme.CodeSyntaxThemeBuilder(CodeSyntaxTheme.DARK)
+            .withUnclassifiedColor(Color.RED)
+            .build()
         articleViewModel.getArticleContent(bid)
         articleViewModel.articleContentLiveData
             .observe(this, Observer<ArticleContent> {
@@ -116,9 +120,10 @@ class ArticleContentActivity : AppCompatActivity(),
                     it.articleBody
                 }
                 val htmlContent = HtmlContent.Builder(articleBody)
+                    .withStyleToken("article")
+                    .withCodeSyntaxTheme(codeSyntaxTheme)
                     .build()
                 htmlParserView.parseHTMLContent(htmlContent)
-
             })
     }
 
@@ -141,6 +146,7 @@ class ArticleContentActivity : AppCompatActivity(),
                 viewGroup.addView(textView)
             }
         }
+
     }
 
 }

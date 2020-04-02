@@ -26,6 +26,10 @@ public enum CodeSyntaxTheme {
         return unclassified;
     }
 
+    public int getBackgroundColor() {
+        return background;
+    }
+
     CodeSyntaxTheme(int normal, int typeName, int keyword, int literal, int comment,
                     int string, int punctuation, int tag, int declaration, int attrName,
                     int attrValue, int background, int unclassified) {

@@ -1,28 +1,27 @@
 package com.library.htmlparser.codehighlight;
 
-import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.view.ViewGroup;
-import android.widget.TextView;
+
+import com.library.htmlparser.Observable;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import io.github.kbiakov.codeview.highlight.CodeHighlighter;
 import io.github.kbiakov.codeview.highlight.ColorThemeData;
 import io.github.kbiakov.codeview.highlight.SyntaxColors;
 
-public class CodeSyntaxHighlighter extends AsyncTask<String, Void, Spanned> {
+public class CodeSyntaxHighlighter extends AsyncTask<String, Void, Spanned>
+        implements Observable<CodeHighlightListener> {
 
-    @SuppressLint("StaticFieldLeak")
-    private ViewGroup codeLayout;
     private String language;
     private CodeSyntaxTheme codeSyntaxTheme;
+    private Set<CodeHighlightListener> listeners = new HashSet<>();
 
-    public CodeSyntaxHighlighter(ViewGroup codeLayout, String language,
-                                 CodeSyntaxTheme codeSyntaxTheme) {
-        this.codeLayout = codeLayout;
+    public CodeSyntaxHighlighter(String language, CodeSyntaxTheme codeSyntaxTheme) {
         this.language = language;
         this.codeSyntaxTheme = codeSyntaxTheme;
     }
@@ -50,14 +49,18 @@ public class CodeSyntaxHighlighter extends AsyncTask<String, Void, Spanned> {
     @Override
     protected void onPostExecute(Spanned spanned) {
         super.onPostExecute(spanned);
-        TextView codeTextView = new TextView(codeLayout.getContext());
-        codeTextView.setText(spanned);
-        codeLayout.addView(codeTextView);
-        codeLayout.setBackgroundColor(getApplicableColor(codeSyntaxTheme.background));
+        for (CodeHighlightListener listener : listeners) {
+            listener.onCodeTextAdded(spanned);
+        }
     }
 
-    private int getApplicableColor(int value) {
-        String hexValue = Integer.toHexString(value);
-        return Color.parseColor("#" + hexValue);
+    @Override
+    public void registerOnParsingListener(CodeHighlightListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public void unRegisterOnParsingListener(CodeHighlightListener listener) {
+        listeners.remove(listener);
     }
 }

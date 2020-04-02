@@ -2,7 +2,7 @@
     package="com.library.htmlparser">
     <uses-permission android:name="android.permission.INTERNET"/>
     <application>
-        <activity android:name=".image.ImagePreviewActivity" android:theme="@style/ActivityTheme"/>
-        <activity android:name=".iframe.WebViewActivity" android:theme="@style/ActivityTheme"/>
+        <activity android:name=".image.ImagePreviewActivity" android:theme="@style/activityTheme"/>
+        <activity android:name=".iframe.WebViewActivity" android:theme="@style/activityTheme"/>
     </application>
 </manifest>

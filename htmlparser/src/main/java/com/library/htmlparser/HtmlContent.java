@@ -1,17 +1,24 @@
 package com.library.htmlparser;
 
+import com.library.htmlparser.codehighlight.CodeSyntaxTheme;
+
+import java.util.Set;
+
 public class HtmlContent {
-    private String htmlContent;
+    private String htmlText;
     private String baseUrl;
     private String endPoint;
     private String initialElementTagId;
+    private CodeSyntaxTheme codeSyntaxTheme;
+    private Set<String> radioGroupClasses;
+    private String styleToken;
 
-    public String getHtmlContent() {
-        return htmlContent;
+    public String getHtmlText() {
+        return htmlText;
     }
 
-    private void setHtmlContent(String htmlContent) {
-        this.htmlContent = htmlContent;
+    private void setHtmlText(String htmlContent) {
+        this.htmlText = htmlContent;
     }
 
     public String getBaseUrl() {
@@ -38,18 +45,45 @@ public class HtmlContent {
         this.initialElementTagId = initialElementTagId;
     }
 
+    public String getStyleToken() {
+        return styleToken;
+    }
+
+    private void setStyleToken(String styleToken) {
+        this.styleToken = styleToken;
+    }
+
+    public CodeSyntaxTheme getCodeSyntaxTheme() {
+        return codeSyntaxTheme;
+    }
+
+    private void setCodeSyntaxTheme(CodeSyntaxTheme codeSyntaxTheme) {
+        this.codeSyntaxTheme = codeSyntaxTheme;
+    }
+
+    public Set<String> getRadioGroupClasses() {
+        return radioGroupClasses;
+    }
+
+    private void setRadioGroupClasses(Set<String> radioGroupClasses) {
+        this.radioGroupClasses = radioGroupClasses;
+    }
+
     private HtmlContent() {
         // empty private constructor
     }
 
     public static class Builder {
-        private String htmlContent = null;
+        private String htmlText;
         private String baseUrl = null;
         private String endPoint = null;
         private String initialElementTagId = null;
+        private CodeSyntaxTheme codeSyntaxTheme = CodeSyntaxTheme.DEFAULT;
+        private Set<String> radioGroupClasses = null;
+        private String styleToken = null;
 
-        public Builder(String content) {
-            this.htmlContent = content;
+        public Builder(String htmlText) {
+            this.htmlText = htmlText;
         }
 
         public Builder withBaseUrl(String baseUrl) {
@@ -67,12 +101,30 @@ public class HtmlContent {
             return this;
         }
 
+        public Builder withStyleToken(String styleToken) {
+            this.styleToken = styleToken;
+            return this;
+        }
+
+        public Builder withCodeSyntaxTheme(CodeSyntaxTheme codeSyntaxTheme) {
+            this.codeSyntaxTheme = codeSyntaxTheme;
+            return this;
+        }
+
+        public Builder withRadioGroupClasses(Set<String> radioGroupClasses) {
+            this.radioGroupClasses = radioGroupClasses;
+            return this;
+        }
+
         public HtmlContent build() {
             HtmlContent htmlContent = new HtmlContent();
-            htmlContent.setHtmlContent(this.htmlContent);
-            htmlContent.setBaseUrl(this.baseUrl);
-            htmlContent.setEndPoint(this.endPoint);
-            htmlContent.setInitialElementTagId(this.initialElementTagId);
+            htmlContent.setHtmlText(this.htmlText);
+            htmlContent.setBaseUrl(baseUrl);
+            htmlContent.setEndPoint(endPoint);
+            htmlContent.setInitialElementTagId(initialElementTagId);
+            htmlContent.setStyleToken(styleToken);
+            htmlContent.setCodeSyntaxTheme(codeSyntaxTheme);
+            htmlContent.setRadioGroupClasses(radioGroupClasses);
             return htmlContent;
         }
     }

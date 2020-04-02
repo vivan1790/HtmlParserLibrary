@@ -1,68 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="HtmlParserView">
-        <attr name="themeToken" format="string"/>
-    </declare-styleable>
 
-    <style name="ActivityTheme" parent="Theme.AppCompat.Light.NoActionBar"/>
+    <style name="activityTheme" parent="Theme.AppCompat.Light.NoActionBar"/>
 
-    <style name="tag_br" parent="tag_space"/>
+    <style name="tag_br" parent="spaceStyleDefault"/>
 
-    <style name="tag_code" parent="textStyleDefault">
+    <style name="tag_code">
         <item name="android:padding">8dp</item>
     </style>
 
-    <style name="tag_div" parent="textStyleDefault"/>
-
-    <style name="tag_h1" parent="tag_header">
+    <style name="tag_h1" parent="headerStyleDefault">
         <item name="android:textSize">32dp</item>
     </style>
 
-    <style name="tag_h2" parent="tag_header">
+    <style name="tag_h2" parent="headerStyleDefault">
         <item name="android:textSize">28dp</item>
     </style>
 
-    <style name="tag_h3" parent="tag_header">
+    <style name="tag_h3" parent="headerStyleDefault">
         <item name="android:textSize">26dp</item>
     </style>
 
-    <style name="tag_h4" parent="tag_header">
+    <style name="tag_h4" parent="headerStyleDefault">
         <item name="android:textSize">24dp</item>
     </style>
 
-    <style name="tag_h5" parent="tag_header">
+    <style name="tag_h5" parent="headerStyleDefault">
         <item name="android:textSize">16dp</item>
     </style>
 
-    <style name="tag_h6" parent="tag_header">
+    <style name="tag_h6" parent="headerStyleDefault">
         <item name="android:textSize">14dp</item>
+    </style>
+
+    <style name="headerStyleDefault">
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">8dp</item>
     </style>
 
     <style name="tag_img">
         <item name="android:padding">12dp</item>
     </style>
 
-    <style name="tag_header" parent="textStyleDefault">
-        <item name="android:textSize">24dp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:paddingTop">16dp</item>
-        <item name="android:paddingBottom">8dp</item>
-    </style>
-
-    <style name="tag_hr" parent="tag_space"/>
-
-    <style name="tag_li" parent="textStyleDefault">
+    <style name="tag_li">
         <item name="android:paddingTop">0dp</item>
         <item name="android:paddingBottom">0dp</item>
         <item name="android:paddingStart">2dp</item>
         <item name="android:paddingEnd">2dp</item>
     </style>
-
-    <style name="tag_ol" parent="textStyleDefault"/>
-
-    <style name="tag_p" parent="textStyleDefault"/>
-
-    <style name="tag_pre" parent="textStyleDefault"/>
 
     <style name="textStyleDefault">
         <item name="android:textColor">@android:color/black</item>
@@ -75,7 +61,7 @@
         <item name="android:visibility">gone</item>
     </style>
 
-    <style name="tag_space">
+    <style name="spaceStyleDefault">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">16dp</item>
     </style>
@@ -93,7 +79,7 @@
         <item name="android:padding">0dp</item>
     </style>
 
-    <style name="tag_td" parent="textStyleDefault">
+    <style name="tag_td">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:padding">4dp</item>
@@ -109,9 +95,7 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="tag_ul" parent="textStyleDefault"/>
-
-    <style name="iframe_full_screen_button" parent="textStyleDefault">
+    <style name="iFrameFullScreenButton">
         <item name="android:layout_gravity">end</item>
         <item name="android:text">Open in new screen</item>
         <item name="android:src">@drawable/ic_fullscreen</item>

@@ -57,7 +57,7 @@ public class HtmlIFrameLayout extends LinearLayout implements View.OnClickListen
     private void addFullScreenButton(Context context,
                                      @Nullable AttributeSet attrs, int defStyleAttr) {
         fullScreenButton = new TextView(new ContextThemeWrapper(
-                context, R.style.iframe_full_screen_button), attrs, defStyleAttr);
+                context, R.style.iFrameFullScreenButton), attrs, defStyleAttr);
         LayoutParams layoutParams = new LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.END;

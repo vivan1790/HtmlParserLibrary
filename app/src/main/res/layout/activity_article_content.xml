@@ -2,7 +2,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white">
 
     <LinearLayout
@@ -11,11 +10,17 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <Button
+            android:id="@+id/scaleTextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SCALE TEXT"
+            android:layout_gravity="center_horizontal"/>
+
         <com.library.htmlparser.HtmlParserView
             android:id="@+id/html_parser_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:themeToken="tutorial"/>
+            android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/debug_view"
