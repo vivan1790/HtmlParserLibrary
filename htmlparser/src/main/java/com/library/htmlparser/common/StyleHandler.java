@@ -1,25 +1,33 @@
-package com.library.htmlparser;
+package com.library.htmlparser.common;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
+
+import com.library.htmlparser.SearchType;
 
 import org.jsoup.nodes.Element;
 
-class StyleHandler {
+public class StyleHandler {
 
-    enum Visibility {
+    public enum Visibility {
         VISIBLE, INVISIBLE, GONE
     }
 
     private Context context;
     private String styleToken;
 
-    StyleHandler(Context context, String styleToken) {
+    public StyleHandler(Context context) {
+        this.context = context;
+        this.styleToken = null;
+    }
+
+    public StyleHandler(Context context, String styleToken) {
         this.context = context;
         this.styleToken = styleToken;
     }
 
-    int findStyleResourceId(Element element) {
+    public int findStyleResourceId(Element element) {
         int id = 0;
         if (styleToken != null && !styleToken.isEmpty()) {
             id = findStyleResourceId(SearchType.TAG_ID, element.id(), true);
@@ -63,7 +71,7 @@ class StyleHandler {
                 context.getPackageName());
     }
 
-    int getDefaultTextStyleResId() {
+    public int getDefaultTextStyleResId() {
         StringBuilder resName = new StringBuilder();
         if (styleToken != null && !styleToken.isEmpty()) {
             resName.append(styleToken).append("__");
@@ -76,7 +84,7 @@ class StyleHandler {
                 context.getPackageName());
     }
 
-    Visibility getVisibleAttributeFromStyle(int styleResId) {
+    public Visibility getVisibleAttributeFromStyle(int styleResId) {
         int[] attrs = {android.R.attr.visibility};
         TypedArray ta = context.obtainStyledAttributes(styleResId, attrs);
         int visibility = ta.getInt(0, 0);
@@ -89,4 +97,11 @@ class StyleHandler {
         }
     }
 
+    public int getButtonTint(int styleResId) {
+        int[] attrs = {android.R.attr.buttonTint};
+        TypedArray ta = context.obtainStyledAttributes(styleResId, attrs);
+        int color = ta.getColor(0, Color.BLACK);
+        ta.recycle();
+        return color;
+    }
 }

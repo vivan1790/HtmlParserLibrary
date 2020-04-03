@@ -1,6 +1,7 @@
 package com.library.htmlparser.radio;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.text.Spanned;
 import android.view.ContextThemeWrapper;
 import android.widget.Checkable;
@@ -9,26 +10,50 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 
 import com.library.htmlparser.R;
+import com.library.htmlparser.common.StyleHandler;
 import com.library.htmlparser.image.HtmlImageView;
 import com.squareup.picasso.Picasso;
 
 public class HtmlRadioLabelLayout extends LinearLayout implements Checkable {
 
     private RadioButton radioButton;
+    private StyleHandler styleHandler;
 
     public HtmlRadioLabelLayout(Context context) {
         super(context);
         this.setOrientation(LinearLayout.HORIZONTAL);
         radioButton = new RadioButton(new ContextThemeWrapper(
-                context, R.style.radioLabelStyleDefault), null, 0);
+                context, android.R.style.Widget_DeviceDefault_Light_CompoundButton_RadioButton),
+                null, 0);
+        int buttonTint = styleHandler.getButtonTint(R.style.radioLabelStyleDefault);
+        ColorStateList colorStateList = new ColorStateList(
+                new int[][]{
+                        new int[]{-android.R.attr.state_checked}, //unchecked
+                        new int[]{ android.R.attr.state_checked}  //checked
+                },
+                new int[] { buttonTint, buttonTint }
+        );
+        radioButton.setButtonTintList(colorStateList);
+        radioButton.setTextAppearance(R.style.radioLabelStyleDefault);
         addView(radioButton);
     }
 
     public HtmlRadioLabelLayout(Context context, int textStyleResourceId) {
         super(context);
         this.setOrientation(LinearLayout.HORIZONTAL);
+        styleHandler = new StyleHandler(context);
         radioButton = new RadioButton(new ContextThemeWrapper(
-                context, R.style.radioLabelStyleDefault), null, 0);
+                context, android.R.style.Widget_DeviceDefault_Light_CompoundButton_RadioButton),
+                null, 0);
+        int buttonTint = styleHandler.getButtonTint(R.style.radioLabelStyleDefault);
+        ColorStateList colorStateList = new ColorStateList(
+                new int[][]{
+                        new int[]{-android.R.attr.state_checked}, //unchecked
+                        new int[]{ android.R.attr.state_checked}  //checked
+                },
+                new int[] { buttonTint, buttonTint }
+        );
+        radioButton.setButtonTintList(colorStateList);
         radioButton.setTextAppearance(textStyleResourceId);
         addView(radioButton);
     }

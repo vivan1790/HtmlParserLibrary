@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.library.htmlparser.codehighlight.CodeSyntaxHighlighter;
 import com.library.htmlparser.codehighlight.CodeTextView;
 import com.library.htmlparser.common.Observable;
+import com.library.htmlparser.common.StyleHandler;
 import com.library.htmlparser.iframe.HtmlIFrameLayout;
 import com.library.htmlparser.image.HtmlImageView;
 import com.library.htmlparser.radio.HtmlRadioGroup;
@@ -299,7 +300,7 @@ public class HtmlParser implements Observable<HtmlParser.OnParsingListener>, Sea
                     codeSpanned.append(element.text());
                 }
                 nodeText.append(codeSpanned);
-                addTextInParent(nodeText, parent, elementStyleResId);
+                addTextInParent(nodeText, parent, 0); // elementStyleResId not required
                 break;
             default:
                 if (elementStyleResId != 0 && styleHandler.getVisibleAttributeFromStyle(
