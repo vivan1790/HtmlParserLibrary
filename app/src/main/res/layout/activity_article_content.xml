@@ -10,25 +10,58 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <Button
-            android:id="@+id/scaleTextButton"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="SCALE TEXT"
-            android:layout_gravity="center_horizontal"/>
+            android:orientation="horizontal"
+            android:weightSum="3">
 
-        <com.library.htmlparser.HtmlParserView
-            android:id="@+id/html_parser_view"
+            <Spinner
+                android:id="@+id/contentTypeSpinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:spinnerMode="dialog"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:entries="@array/content_type_entries"/>
+
+            <Button
+                android:id="@+id/scaleUpTextButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/button_bg_selector"
+                android:textColor="@android:color/white"
+                android:text="@string/scale_up"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_gravity="center_horizontal"/>
+
+            <Button
+                android:id="@+id/scaleDownTextButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/button_bg_selector"
+                android:textColor="@android:color/white"
+                android:text="@string/scale_down"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_gravity="center_horizontal"/>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/content_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <TextView
-            android:id="@+id/debug_view"
-            android:layout_width="match_parent"
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_blue_dark"
-            android:textColor="@android:color/white"
-            android:visibility="gone"/>
+            android:layout_gravity="center"/>
 
     </LinearLayout>
 

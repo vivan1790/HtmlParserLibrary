@@ -1,4 +1,4 @@
-package com.library.htmlparser;
+package com.library.htmlparser.common;
 
 public interface Observable<T> {
 

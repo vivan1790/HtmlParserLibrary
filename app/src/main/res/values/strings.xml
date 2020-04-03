@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">HtmlParserAppSample</string>
     <string name="content_load_error">Something went wrong</string>
+    <string name="scale_up">Scale up</string>
+    <string name="scale_down">Scale down</string>
+    <string-array name="content_type_entries">
+        <item>Tutorial content</item>
+        <item>Test content</item>
+        <item>Article content</item>
+    </string-array>
 </resources>

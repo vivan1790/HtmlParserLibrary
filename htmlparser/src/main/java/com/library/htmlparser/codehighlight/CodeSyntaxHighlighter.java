@@ -5,7 +5,7 @@ import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 
-import com.library.htmlparser.Observable;
+import com.library.htmlparser.common.Observable;
 
 import java.util.HashSet;
 import java.util.Set;

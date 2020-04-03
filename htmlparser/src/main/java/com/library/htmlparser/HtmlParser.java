@@ -9,7 +9,6 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
-import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +18,9 @@ import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
-
 import com.library.htmlparser.codehighlight.CodeSyntaxHighlighter;
 import com.library.htmlparser.codehighlight.CodeTextView;
+import com.library.htmlparser.common.Observable;
 import com.library.htmlparser.iframe.HtmlIFrameLayout;
 import com.library.htmlparser.image.HtmlImageView;
 import com.library.htmlparser.radio.HtmlRadioGroup;
@@ -42,17 +40,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class HtmlParserView extends LinearLayout
-        implements Observable<HtmlParserView.OnParsingListener>, SearchableByHtmlTags {
+public class HtmlParser implements Observable<HtmlParser.OnParsingListener>, SearchableByHtmlTags {
 
     public interface OnParsingListener {
-        void onParsingStarted(HtmlParserView parserView);
-        
-        void onParsingSuccessful(HtmlParserView parserView);
-        
-        void onParsingFailed(HtmlParserView parserView, String errorMessage);
+
+        void onParsingStarted(HtmlParser htmlParser);
+
+        void onParsingSuccessful(HtmlParser htmlParser);
+
+        void onParsingFailed(HtmlParser htmlParser, String errorMessage);
     }
 
+    private LinearLayout mainLayout;
     private HtmlContent currentHtmlContent;
     private StyleHandler styleHandler;
     private Set<OnParsingListener> listeners = new HashSet<>();
@@ -61,20 +60,18 @@ public class HtmlParserView extends LinearLayout
     private List<ViewGroup> viewGroupList = new ArrayList<>();
     private Set<TextView> textViews = new HashSet<>();
 
-    public HtmlParserView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        this.setOrientation(LinearLayout.VERTICAL);
+    public HtmlParser(Context context) {
+        mainLayout = new LinearLayout(context);
+        mainLayout.setOrientation(LinearLayout.VERTICAL);
     }
 
-    public HtmlParserView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        this.setOrientation(LinearLayout.VERTICAL);
+    public HtmlParser(Context context, int styleResourceId) {
+        mainLayout = new LinearLayout(new ContextThemeWrapper(context, styleResourceId), null, 0);
+        mainLayout.setOrientation(LinearLayout.VERTICAL);
     }
 
-    public void clear() {
-        if (imageUrls != null) imageUrls.clear();
-        this.removeAllViewsInLayout();
-        this.removeAllViews();
+    public View getView() {
+        return mainLayout;
     }
 
     public void parseHTMLContent(HtmlContent htmlContent) {
@@ -99,7 +96,7 @@ public class HtmlParserView extends LinearLayout
             Document document = Jsoup.parse(htmlContent.getHtmlText());
             Element initialElement = (htmlContent.getInitialElementTagId() != null) ?
                     document.getElementById(htmlContent.getInitialElementTagId()) : document.body();
-            parse(initialElement, this);
+            parse(initialElement, mainLayout);
             if (listeners != null) {
                 for (OnParsingListener listener : listeners) {
                     listener.onParsingSuccessful(this);
@@ -116,11 +113,18 @@ public class HtmlParserView extends LinearLayout
     }
 
     public void scaleTextSize(float scaleFactor) {
-        float scaleDensity = getResources().getDisplayMetrics().scaledDensity;
+        float scaleDensity = getContext().getResources().getDisplayMetrics().scaledDensity;
         for (TextView textView : textViews) {
             float newSize = scaleFactor * textView.getTextSize() / scaleDensity;
             textView.setTextSize(newSize);
         }
+    }
+
+    private void clear() {
+        imageUrls.clear();
+        textViews.clear();
+        mainLayout.removeAllViewsInLayout();
+        mainLayout.removeAllViews();
     }
 
     private void addTextInParent(Spanned spannedText, final ViewGroup parent,
@@ -339,13 +343,17 @@ public class HtmlParserView extends LinearLayout
         }
     }
 
-    private boolean isRadioGroupClass(Element element) {
-        return (currentHtmlContent.getRadioGroupClasses() != null
-                && (currentHtmlContent.getRadioGroupClasses().contains(element.className())));
+    private Context getContext() {
+        return mainLayout.getContext();
     }
 
     private Context getThemeContext(Context context, int resourceId) {
         return new ContextThemeWrapper(context, resourceId);
+    }
+
+    private boolean isRadioGroupClass(Element element) {
+        return (currentHtmlContent.getRadioGroupClasses() != null
+                && (currentHtmlContent.getRadioGroupClasses().contains(element.className())));
     }
 
     public Set<String> getImageUrls() {
@@ -365,21 +373,21 @@ public class HtmlParserView extends LinearLayout
     @Override
     public List<ViewGroup> findViewGroupsByHtmlTagName(String tagName) {
         viewGroupList.clear();
-        traverseAndAddToList(SearchType.TAG_NAME, tagName, this);
+        traverseAndAddToList(SearchType.TAG_NAME, tagName, mainLayout);
         return viewGroupList;
     }
 
     @Override
     public List<ViewGroup> findViewGroupsByHtmlTagId(String id) {
         viewGroupList.clear();
-        traverseAndAddToList(SearchType.TAG_ID, id, this);
+        traverseAndAddToList(SearchType.TAG_ID, id, mainLayout);
         return viewGroupList;
     }
 
     @Override
     public List<ViewGroup> findViewGroupsByHtmlTagClassName(String className) {
         viewGroupList.clear();
-        traverseAndAddToList(SearchType.TAG_CLASS, className, this);
+        traverseAndAddToList(SearchType.TAG_CLASS, className, mainLayout);
         return viewGroupList;
     }
 
