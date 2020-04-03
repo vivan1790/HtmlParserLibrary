@@ -298,7 +298,10 @@ public class HtmlParserView extends LinearLayout
                 addTextInParent(nodeText, parent, elementStyleResId);
                 break;
             default:
-                nodeText.append(Html.fromHtml(element.toString(), Html.FROM_HTML_MODE_LEGACY));
+                if (elementStyleResId != 0 && styleHandler.getVisibleAttributeFromStyle(
+                        elementStyleResId) == StyleHandler.Visibility.VISIBLE) {
+                    nodeText.append(Html.fromHtml(element.toString(), Html.FROM_HTML_MODE_LEGACY));
+                }
                 addTextInParent(nodeText, parent, elementStyleResId);
         }
     }

@@ -103,4 +103,14 @@
         <item name="android:scaleType">fitCenter</item>
         <item name="android:adjustViewBounds">true</item>
     </style>
+
+    <style name="radioLabelStyleDefault" parent="radioButtonTheme">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">26dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:buttonTint">@android:color/holo_orange_dark</item>
+    </style>
+
+    <style name="radioButtonTheme" parent="@android:style/Widget.Holo.CompoundButton.RadioButton"/>
 </resources>

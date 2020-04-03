@@ -1,10 +1,15 @@
 package com.library.htmlparser;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 
 import org.jsoup.nodes.Element;
 
 class StyleHandler {
+
+    enum Visibility {
+        VISIBLE, INVISIBLE, GONE
+    }
 
     private Context context;
     private String styleToken;
@@ -37,7 +42,7 @@ class StyleHandler {
         return id;
     }
 
-    int findStyleResourceId(SearchType searchType, String searchParam,
+    private int findStyleResourceId(SearchType searchType, String searchParam,
                                     boolean searchByStyleToken) {
         StringBuilder resName = new StringBuilder();
         if (searchByStyleToken) {
@@ -69,6 +74,19 @@ class StyleHandler {
         if (resId != 0) return resId;
         else return context.getResources().getIdentifier("textStyleDefault", "style",
                 context.getPackageName());
+    }
+
+    Visibility getVisibleAttributeFromStyle(int styleResId) {
+        int[] attrs = {android.R.attr.visibility};
+        TypedArray ta = context.obtainStyledAttributes(styleResId, attrs);
+        int visibility = ta.getInt(0, 0);
+        ta.recycle();
+        switch (visibility) {
+            case 2 : return Visibility.GONE;
+            case 1 : return Visibility.INVISIBLE;
+            case 0 :
+            default : return Visibility.VISIBLE;
+        }
     }
 
 }

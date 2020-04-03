@@ -60,4 +60,5 @@
     <style name="id_quiz_content_head_left">
         <item name="android:visibility">gone</item>
     </style>
+
 </resources>

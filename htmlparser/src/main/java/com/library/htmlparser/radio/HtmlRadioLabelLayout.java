@@ -2,15 +2,13 @@ package com.library.htmlparser.radio;
 
 import android.content.Context;
 import android.text.Spanned;
-import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
 import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 
-import androidx.annotation.Nullable;
-
+import com.library.htmlparser.R;
 import com.library.htmlparser.image.HtmlImageView;
 import com.squareup.picasso.Picasso;
 
@@ -21,22 +19,17 @@ public class HtmlRadioLabelLayout extends LinearLayout implements Checkable {
     public HtmlRadioLabelLayout(Context context) {
         super(context);
         this.setOrientation(LinearLayout.HORIZONTAL);
-        radioButton = new RadioButton(context);
+        radioButton = new RadioButton(new ContextThemeWrapper(
+                context, R.style.radioLabelStyleDefault), null, 0);
         addView(radioButton);
     }
 
     public HtmlRadioLabelLayout(Context context, int textStyleResourceId) {
         super(context);
         this.setOrientation(LinearLayout.HORIZONTAL);
-        radioButton = new RadioButton(getContext());
+        radioButton = new RadioButton(new ContextThemeWrapper(
+                context, R.style.radioLabelStyleDefault), null, 0);
         radioButton.setTextAppearance(textStyleResourceId);
-        addView(radioButton);
-    }
-
-    public HtmlRadioLabelLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        this.setOrientation(LinearLayout.HORIZONTAL);
-        radioButton = new RadioButton(context, attrs, defStyleAttr);
         addView(radioButton);
     }
 
