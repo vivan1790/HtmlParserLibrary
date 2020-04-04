@@ -303,7 +303,7 @@ public class HtmlParser implements Observable<HtmlParser.OnParsingListener>, Sea
                 addTextInParent(nodeText, parent, 0); // elementStyleResId not required
                 break;
             default:
-                if (elementStyleResId != 0 && styleHandler.getVisibleAttributeFromStyle(
+                if (elementStyleResId == 0 || styleHandler.getVisibleAttributeFromStyle(
                         elementStyleResId) == StyleHandler.Visibility.VISIBLE) {
                     nodeText.append(Html.fromHtml(element.toString(), Html.FROM_HTML_MODE_LEGACY));
                 }

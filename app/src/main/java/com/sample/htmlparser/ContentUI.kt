@@ -54,8 +54,8 @@ class ArticleContentActivity : AppCompatActivity(), HtmlParser.OnParsingListener
         // Studytonight tutorial
         // iframe example : https://www.studytonight.com/python/exception-handling-python
         // youtube example : https://www.studytonight.com/dbms/database-normalization
-        val subject = "dbms"
-        val tutorial = "truncate-drop-rename-query.php"
+        val subject = "data-structures"
+        val tutorial = "bubble-sort"
         //subscribeToSTTutorialModel(subject, tutorial)
 
         // Studytonight test
