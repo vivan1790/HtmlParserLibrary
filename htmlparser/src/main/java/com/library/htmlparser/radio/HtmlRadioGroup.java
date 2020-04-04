@@ -5,12 +5,12 @@ import android.util.AttributeSet;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HtmlRadioGroup extends RadioGroup {
 
-    private Set<CompoundButton> buttons = new HashSet<>();
+    private List<CompoundButton> buttons = new ArrayList<>();
 
     public HtmlRadioGroup(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -30,5 +30,12 @@ public class HtmlRadioGroup extends RadioGroup {
                 }
             }
         });
+    }
+
+    public int getIndexOfSelection() {
+        for (int i = 0; i < buttons.size(); i++) {
+            if (buttons.get(i).isChecked()) return i;
+        }
+        return -1;
     }
 }
