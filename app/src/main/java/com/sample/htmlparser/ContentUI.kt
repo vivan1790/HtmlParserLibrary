@@ -46,6 +46,7 @@ class ArticleContentActivity : AppCompatActivity(), HtmlParser.OnParsingListener
 
         htmlParser = HtmlParser(this)
         htmlParser.registerOnParsingListener(this)
+        contentLayout.addView(htmlParser?.view)
 
         tutorialViewModel = ViewModelProvider(this).get(TutorialViewModel:: class.java)
         testViewModel = ViewModelProvider(this).get(TestViewModel:: class.java)
