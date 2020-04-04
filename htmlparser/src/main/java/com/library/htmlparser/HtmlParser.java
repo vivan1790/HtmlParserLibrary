@@ -184,7 +184,7 @@ public class HtmlParser implements Observable<HtmlParser.OnParsingListener>, Sea
         ViewGroup layout;
         switch (element.tagName()) {
             case "li":
-                StringBuilder indexSB = new StringBuilder();
+                SpannableStringBuilder indexSB = new SpannableStringBuilder();
                 if ("ol".equals(element.parentNode().nodeName())) {
                     int liSiblingsCount = 0;
                     for (Node sibling : element.parentNode().childNodes()) {
@@ -193,18 +193,19 @@ public class HtmlParser implements Observable<HtmlParser.OnParsingListener>, Sea
                         }
                         if (sibling.equals(element)) break;
                     }
-                    indexSB.append(liSiblingsCount).append('.');
+                    indexSB.append(String.valueOf(liSiblingsCount)).append('.');
                 } else {
                     indexSB.append('\u2022');
                 }
                 LinearLayout liLayout = new LinearLayout(context, null, 0);
                 liLayout.setOrientation(LinearLayout.HORIZONTAL);
-                TextView itemIndexView = new TextView(context, null, 0);
+                addTextInParent(indexSB, liLayout, elementStyleResId);
+                /*TextView itemIndexView = new TextView(context, null, 0);
                 itemIndexView.setText(indexSB);
+                liLayout.addView(itemIndexView);*/
                 layout = new LinearLayout(context, null, 0);
                 ((LinearLayout) layout).setOrientation(LinearLayout.VERTICAL);
                 parse(element, layout);
-                liLayout.addView(itemIndexView);
                 liLayout.addView(layout);
                 parent.addView(liLayout);
                 layout.setTag(element);
@@ -326,7 +327,8 @@ public class HtmlParser implements Observable<HtmlParser.OnParsingListener>, Sea
             if (inputNode != null && labelNode != null
                     && labelNode.attr("for").equals(inputNode.attr("id"))) {
                 final HtmlRadioLabelLayout labelLayout = new HtmlRadioLabelLayout(
-                        getContext(), styleHandler.getDefaultTextStyleResId());
+                        getContext(), styleHandler.getDefaultTextStyleResId(),
+                        currentHtmlContent.getStyleToken());
                 parent.addView(labelLayout);
                 parent.registerCompoundButton(labelLayout.getRadioButton());
                 SpannableStringBuilder labelText = new SpannableStringBuilder(

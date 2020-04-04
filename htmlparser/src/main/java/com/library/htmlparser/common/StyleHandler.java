@@ -84,6 +84,19 @@ public class StyleHandler {
                 context.getPackageName());
     }
 
+    public int getDefaultRadioLabelStyleResId() {
+        StringBuilder resName = new StringBuilder();
+        if (styleToken != null && !styleToken.isEmpty()) {
+            resName.append(styleToken).append("__");
+        }
+        resName.append("radioLabelStyleDefault");
+        int resId = context.getResources().getIdentifier(resName.toString(), "style",
+                context.getPackageName());
+        if (resId != 0) return resId;
+        else return context.getResources().getIdentifier("radioLabelStyleDefault", "style",
+                context.getPackageName());
+    }
+
     public Visibility getVisibleAttributeFromStyle(int styleResId) {
         int[] attrs = {android.R.attr.visibility};
         TypedArray ta = context.obtainStyledAttributes(styleResId, attrs);

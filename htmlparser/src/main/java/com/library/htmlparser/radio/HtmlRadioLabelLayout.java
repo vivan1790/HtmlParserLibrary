@@ -38,14 +38,14 @@ public class HtmlRadioLabelLayout extends LinearLayout implements Checkable {
         addView(radioButton);
     }
 
-    public HtmlRadioLabelLayout(Context context, int textStyleResourceId) {
+    public HtmlRadioLabelLayout(Context context, int textStyleResourceId, String tokenName) {
         super(context);
         this.setOrientation(LinearLayout.HORIZONTAL);
-        styleHandler = new StyleHandler(context);
+        styleHandler = new StyleHandler(context, tokenName);
         radioButton = new RadioButton(new ContextThemeWrapper(
                 context, android.R.style.Widget_DeviceDefault_Light_CompoundButton_RadioButton),
                 null, 0);
-        int buttonTint = styleHandler.getButtonTint(R.style.radioLabelStyleDefault);
+        int buttonTint = styleHandler.getButtonTint(styleHandler.getDefaultRadioLabelStyleResId());
         ColorStateList colorStateList = new ColorStateList(
                 new int[][]{
                         new int[]{-android.R.attr.state_checked}, //unchecked
