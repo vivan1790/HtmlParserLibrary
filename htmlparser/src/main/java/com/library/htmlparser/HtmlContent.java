@@ -11,6 +11,8 @@ public class HtmlContent {
     private String initialElementTagId;
     private CodeSyntaxTheme codeSyntaxTheme;
     private Set<String> radioGroupClasses;
+    private float textScaleFactor;
+    private boolean offline;
     private String styleToken;
 
     public String getHtmlText() {
@@ -69,6 +71,22 @@ public class HtmlContent {
         this.radioGroupClasses = radioGroupClasses;
     }
 
+    public float getTextScaleFactor() {
+        return textScaleFactor;
+    }
+
+    private void setTextScaleFactor(float textScaleFactor) {
+        this.textScaleFactor = textScaleFactor;
+    }
+
+    public boolean isContentOffline() {
+        return offline;
+    }
+
+    private void setContentOffline(boolean offline) {
+        this.offline = offline;
+    }
+
     private HtmlContent() {
         // empty private constructor
     }
@@ -80,6 +98,8 @@ public class HtmlContent {
         private String initialElementTagId = null;
         private CodeSyntaxTheme codeSyntaxTheme = CodeSyntaxTheme.DEFAULT;
         private Set<String> radioGroupClasses = null;
+        private float textScaleFactor = 1.0f;
+        private boolean offlineContent = false;
         private String styleToken = null;
 
         public Builder(String htmlText) {
@@ -116,6 +136,16 @@ public class HtmlContent {
             return this;
         }
 
+        public Builder withTextScaleFactor(float textScaleFactor) {
+            this.textScaleFactor = textScaleFactor;
+            return this;
+        }
+
+        public Builder withContentOffline(boolean offlineContent) {
+            this.offlineContent = offlineContent;
+            return this;
+        }
+
         public HtmlContent build() {
             HtmlContent htmlContent = new HtmlContent();
             htmlContent.setHtmlText(this.htmlText);
@@ -125,6 +155,8 @@ public class HtmlContent {
             htmlContent.setStyleToken(styleToken);
             htmlContent.setCodeSyntaxTheme(codeSyntaxTheme);
             htmlContent.setRadioGroupClasses(radioGroupClasses);
+            htmlContent.setTextScaleFactor(textScaleFactor);
+            htmlContent.setContentOffline(offlineContent);
             return htmlContent;
         }
     }

@@ -16,6 +16,8 @@ public class StyleHandler {
 
     private Context context;
     private String styleToken;
+    private int defaultTextStyleResId = 0;
+    private int defaultRadioLabelStyleResId = 0;
 
     public StyleHandler(Context context) {
         this.context = context;
@@ -72,29 +74,35 @@ public class StyleHandler {
     }
 
     public int getDefaultTextStyleResId() {
-        StringBuilder resName = new StringBuilder();
-        if (styleToken != null && !styleToken.isEmpty()) {
-            resName.append(styleToken).append("__");
+        if (defaultTextStyleResId == 0) {
+            StringBuilder resName = new StringBuilder();
+            if (styleToken != null && !styleToken.isEmpty()) {
+                resName.append(styleToken).append("__");
+            }
+            resName.append("textStyleDefault");
+            int resId = context.getResources().getIdentifier(resName.toString(), "style",
+                    context.getPackageName());
+            if (resId != 0) defaultTextStyleResId = resId;
+            else defaultTextStyleResId = context.getResources().getIdentifier(
+                    "textStyleDefault", "style", context.getPackageName());
         }
-        resName.append("textStyleDefault");
-        int resId = context.getResources().getIdentifier(resName.toString(), "style",
-                context.getPackageName());
-        if (resId != 0) return resId;
-        else return context.getResources().getIdentifier("textStyleDefault", "style",
-                context.getPackageName());
+        return defaultTextStyleResId;
     }
 
     public int getDefaultRadioLabelStyleResId() {
-        StringBuilder resName = new StringBuilder();
-        if (styleToken != null && !styleToken.isEmpty()) {
-            resName.append(styleToken).append("__");
+        if (defaultRadioLabelStyleResId == 0) {
+            StringBuilder resName = new StringBuilder();
+            if (styleToken != null && !styleToken.isEmpty()) {
+                resName.append(styleToken).append("__");
+            }
+            resName.append("radioLabelStyleDefault");
+            int resId = context.getResources().getIdentifier(resName.toString(), "style",
+                    context.getPackageName());
+            if (resId != 0) defaultRadioLabelStyleResId = resId;
+            else defaultRadioLabelStyleResId = context.getResources().getIdentifier(
+                    "radioLabelStyleDefault", "style", context.getPackageName());
         }
-        resName.append("radioLabelStyleDefault");
-        int resId = context.getResources().getIdentifier(resName.toString(), "style",
-                context.getPackageName());
-        if (resId != 0) return resId;
-        else return context.getResources().getIdentifier("radioLabelStyleDefault", "style",
-                context.getPackageName());
+        return defaultRadioLabelStyleResId;
     }
 
     public Visibility getVisibleAttributeFromStyle(int styleResId) {
@@ -110,11 +118,19 @@ public class StyleHandler {
         }
     }
 
-    public int getButtonTint(int styleResId) {
+    public int getButtonTintFromStyle(int styleResId) {
         int[] attrs = {android.R.attr.buttonTint};
         TypedArray ta = context.obtainStyledAttributes(styleResId, attrs);
         int color = ta.getColor(0, Color.BLACK);
         ta.recycle();
         return color;
+    }
+
+    public float getTextSizeFromStyle(int styleResId) {
+        int[] attrs = {android.R.attr.textSize};
+        TypedArray ta = context.obtainStyledAttributes(styleResId, attrs);
+        float size = ta.getDimension(0, 0f);
+        ta.recycle();
+        return size;
     }
 }

@@ -34,6 +34,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -59,20 +60,10 @@ public class HtmlParser implements Observable<HtmlParser.OnParsingListener>, Sea
 
     private Set<String> imageUrls = new HashSet<>();
     private List<ViewGroup> viewGroupList = new ArrayList<>();
-    private Set<TextView> textViews = new HashSet<>();
 
-    public HtmlParser(Context context) {
-        mainLayout = new LinearLayout(context);
+    public HtmlParser(LinearLayout layout) {
+        this.mainLayout = layout;
         mainLayout.setOrientation(LinearLayout.VERTICAL);
-    }
-
-    public HtmlParser(Context context, int styleResourceId) {
-        mainLayout = new LinearLayout(new ContextThemeWrapper(context, styleResourceId), null, 0);
-        mainLayout.setOrientation(LinearLayout.VERTICAL);
-    }
-
-    public View getView() {
-        return mainLayout;
     }
 
     public void parseHTMLContent(HtmlContent htmlContent) {
@@ -113,17 +104,21 @@ public class HtmlParser implements Observable<HtmlParser.OnParsingListener>, Sea
         }
     }
 
-    public void scaleTextSize(float scaleFactor) {
-        float scaleDensity = getContext().getResources().getDisplayMetrics().scaledDensity;
-        for (TextView textView : textViews) {
-            float newSize = scaleFactor * textView.getTextSize() / scaleDensity;
+    private void scaleTextSize(TextView textView, int selfStyleResId, int parentStyleResId) {
+        if (currentHtmlContent.getTextScaleFactor() != 1.0f) {
+            float currentSize = styleHandler.getTextSizeFromStyle(selfStyleResId);
+            float parentSize = styleHandler.getTextSizeFromStyle(parentStyleResId);
+            if (parentSize != 0) {
+                currentSize = parentSize;
+            }
+            float scaleDensity = getContext().getResources().getDisplayMetrics().scaledDensity;
+            float newSize = currentHtmlContent.getTextScaleFactor() * currentSize / scaleDensity;
             textView.setTextSize(newSize);
         }
     }
 
     private void clear() {
         imageUrls.clear();
-        textViews.clear();
         mainLayout.removeAllViewsInLayout();
         mainLayout.removeAllViews();
     }
@@ -142,7 +137,7 @@ public class HtmlParser implements Observable<HtmlParser.OnParsingListener>, Sea
                 if (parentStyleResId != 0) {
                     textView.setTextAppearance(parentStyleResId);
                 }
-                textViews.add(textView);
+                scaleTextSize(textView, styleHandler.getDefaultTextStyleResId(), parentStyleResId);
             }
         } else {
             TextView textView = (TextView) parent.getChildAt(childCount - 1);
@@ -270,7 +265,11 @@ public class HtmlParser implements Observable<HtmlParser.OnParsingListener>, Sea
                 ImageView imageView = new HtmlImageView(context, null, 0);
                 parent.addView(imageView);
                 String imageUrl = getAbsoluteUrl(element.attr("src"));
-                Picasso.get().load(imageUrl).into(imageView);
+                if (currentHtmlContent.isContentOffline()) {
+                    Picasso.get().load(new File(imageUrl)).into(imageView);
+                } else {
+                    Picasso.get().load(imageUrl).into(imageView);
+                }
                 imageUrls.add(imageUrl);
                 break;
             case "code":
@@ -293,7 +292,8 @@ public class HtmlParser implements Observable<HtmlParser.OnParsingListener>, Sea
                     CodeTextView codeTextView = new CodeTextView(context);
                     codeSyntaxHighlighter.registerOnParsingListener(codeTextView);
                     codeLayout.addView(codeTextView);
-                    textViews.add(codeTextView);
+                    scaleTextSize(codeTextView, styleHandler.getDefaultTextStyleResId(),
+                            elementStyleResId);
                     parent.addView(codeLayout);
                     codeLayout.setTag(element);
                     break;
@@ -341,7 +341,8 @@ public class HtmlParser implements Observable<HtmlParser.OnParsingListener>, Sea
                                     }
                                 }, null));
                 labelLayout.setLabel(labelText);
-                textViews.add(labelLayout.getRadioButton());
+                scaleTextSize(labelLayout.getRadioButton(),
+                        styleHandler.getDefaultTextStyleResId(), 0);
             }
         }
     }

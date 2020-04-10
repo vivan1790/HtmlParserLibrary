@@ -19,9 +19,7 @@ import com.sample.htmlparser.tutorial.TutorialViewModel
 class ArticleContentActivity : AppCompatActivity(), HtmlParser.OnParsingListener {
 
     private lateinit var contentTypeSpinner : Spinner
-    private lateinit var scaleUpTextButton : Button
-    private lateinit var scaleDownTextButton : Button
-    private lateinit var contentLayout: ViewGroup
+    private lateinit var contentLayout: LinearLayout
     private lateinit var progressBar : ProgressBar
 
     private lateinit var articleViewModel: ArticleViewModel
@@ -35,18 +33,9 @@ class ArticleContentActivity : AppCompatActivity(), HtmlParser.OnParsingListener
         setContentView(R.layout.activity_article_content)
         contentLayout = findViewById(R.id.content_layout)
         progressBar = findViewById(R.id.progressBar)
-        scaleUpTextButton = findViewById(R.id.scaleUpTextButton)
-        scaleUpTextButton.setOnClickListener {
-            htmlParser.scaleTextSize(1.5f)
-        }
-        scaleDownTextButton = findViewById(R.id.scaleDownTextButton)
-        scaleDownTextButton.setOnClickListener {
-            htmlParser.scaleTextSize(0.5f)
-        }
 
-        htmlParser = HtmlParser(this)
+        htmlParser = HtmlParser(contentLayout)
         htmlParser.registerOnParsingListener(this)
-        contentLayout.addView(htmlParser?.view)
 
         tutorialViewModel = ViewModelProvider(this).get(TutorialViewModel:: class.java)
         testViewModel = ViewModelProvider(this).get(TestViewModel:: class.java)
@@ -173,7 +162,6 @@ class ArticleContentActivity : AppCompatActivity(), HtmlParser.OnParsingListener
 
     override fun onParsingSuccessful(htmlParser: HtmlParser?) {
         loadingInProgress(false)
-        contentLayout.addView(htmlParser?.view)
         val imageUrls = htmlParser?.imageUrls
         if (imageUrls != null) {
             for (url in imageUrls) println("image url = * $url")

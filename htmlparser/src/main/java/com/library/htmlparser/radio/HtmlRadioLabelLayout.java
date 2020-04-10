@@ -25,7 +25,7 @@ public class HtmlRadioLabelLayout extends LinearLayout implements Checkable {
         radioButton = new RadioButton(new ContextThemeWrapper(
                 context, android.R.style.Widget_DeviceDefault_Light_CompoundButton_RadioButton),
                 null, 0);
-        int buttonTint = styleHandler.getButtonTint(R.style.radioLabelStyleDefault);
+        int buttonTint = styleHandler.getButtonTintFromStyle(R.style.radioLabelStyleDefault);
         ColorStateList colorStateList = new ColorStateList(
                 new int[][]{
                         new int[]{-android.R.attr.state_checked}, //unchecked
@@ -45,7 +45,8 @@ public class HtmlRadioLabelLayout extends LinearLayout implements Checkable {
         radioButton = new RadioButton(new ContextThemeWrapper(
                 context, android.R.style.Widget_DeviceDefault_Light_CompoundButton_RadioButton),
                 null, 0);
-        int buttonTint = styleHandler.getButtonTint(styleHandler.getDefaultRadioLabelStyleResId());
+        int buttonTint = styleHandler.getButtonTintFromStyle(
+                styleHandler.getDefaultRadioLabelStyleResId());
         ColorStateList colorStateList = new ColorStateList(
                 new int[][]{
                         new int[]{-android.R.attr.state_checked}, //unchecked
