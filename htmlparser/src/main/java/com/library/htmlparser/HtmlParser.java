@@ -260,6 +260,9 @@ public class HtmlParser implements Observable<HtmlParser.OnParsingListener>, Sea
                 parent.addView(iFrameLayout);
                 iFrameLayout.setTag(element);
                 iFrameLayout.loadData(element);
+                if (currentHtmlContent.isContentOffline()) {
+                    iFrameLayout.setVisibility(View.GONE);
+                }
                 break;
             case "img":
                 ImageView imageView = new HtmlImageView(context, null, 0);
