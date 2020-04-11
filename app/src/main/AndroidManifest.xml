@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".ArticleContentActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="unspecified"
             android:configChanges="keyboardHidden|orientation|screenSize"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
