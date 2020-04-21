@@ -435,7 +435,7 @@ public class HtmlParser implements Observable<HtmlParser.OnParsingListener>, Sea
         String imageUrl;
         try {
             URL url = new URL(String.format("%s/%s", currentHtmlContent.getBaseUrl(),
-                    currentHtmlContent.getEndPoint()));
+                    currentHtmlContent.getPath()));
             URI uri = url.toURI();
             imageUrl = uri.resolve(str).toString();
         } catch (Exception e) {

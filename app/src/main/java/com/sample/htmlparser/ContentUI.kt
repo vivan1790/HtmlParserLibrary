@@ -3,7 +3,6 @@ package com.sample.htmlparser
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -88,7 +87,7 @@ class ArticleContentActivity : AppCompatActivity(), HtmlParser.OnParsingListener
         tutorialViewModel.tutorialContentLiveData.observe(this, Observer<String> {
             val htmlContent = HtmlContent.Builder(it)
                 .withBaseUrl("https://www.studytonight.com/$subject")
-                .withEndPoint(tutorial)
+                .withPath(tutorial)
                 .withInitialElementTagId("body-content")
                 .withStyleToken("tutorial")
                 .withCodeSyntaxTheme(codeSyntaxTheme)
@@ -108,7 +107,7 @@ class ArticleContentActivity : AppCompatActivity(), HtmlParser.OnParsingListener
         testViewModel.testContentLiveData.observe(this, Observer<String> {
             val htmlContent = HtmlContent.Builder(it)
                 .withBaseUrl("https://www.studytonight.com/$subject/tests")
-                .withEndPoint(testIndex)
+                .withPath(testIndex)
                 .withInitialElementTagId("quiz_container")
                 .withStyleToken("test")
                 .withCodeSyntaxTheme(codeSyntaxTheme)

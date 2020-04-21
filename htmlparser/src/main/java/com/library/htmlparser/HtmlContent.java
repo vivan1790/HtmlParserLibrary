@@ -7,7 +7,7 @@ import java.util.Set;
 public class HtmlContent {
     private String htmlText;
     private String baseUrl;
-    private String endPoint;
+    private String path;
     private String initialElementTagId;
     private CodeSyntaxTheme codeSyntaxTheme;
     private Set<String> radioGroupClasses;
@@ -31,12 +31,12 @@ public class HtmlContent {
         this.baseUrl = baseUrl;
     }
 
-    public String getEndPoint() {
-        return endPoint;
+    public String getPath() {
+        return path;
     }
 
-    private void setEndPoint(String endPoint) {
-        this.endPoint = endPoint;
+    private void setPath(String path) {
+        this.path = path;
     }
 
     public String getInitialElementTagId() {
@@ -94,7 +94,7 @@ public class HtmlContent {
     public static class Builder {
         private String htmlText;
         private String baseUrl = null;
-        private String endPoint = null;
+        private String path = null;
         private String initialElementTagId = null;
         private CodeSyntaxTheme codeSyntaxTheme = CodeSyntaxTheme.DEFAULT;
         private Set<String> radioGroupClasses = null;
@@ -111,8 +111,8 @@ public class HtmlContent {
             return this;
         }
 
-        public Builder withEndPoint(String endPoint) {
-            this.endPoint = endPoint;
+        public Builder withPath(String endPoint) {
+            this.path = endPoint;
             return this;
         }
 
@@ -150,7 +150,7 @@ public class HtmlContent {
             HtmlContent htmlContent = new HtmlContent();
             htmlContent.setHtmlText(this.htmlText);
             htmlContent.setBaseUrl(baseUrl);
-            htmlContent.setEndPoint(endPoint);
+            htmlContent.setPath(path);
             htmlContent.setInitialElementTagId(initialElementTagId);
             htmlContent.setStyleToken(styleToken);
             htmlContent.setCodeSyntaxTheme(codeSyntaxTheme);
