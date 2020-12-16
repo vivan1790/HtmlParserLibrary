@@ -206,16 +206,18 @@ public class HtmlParser implements Observable<HtmlParser.OnParsingListener>, Sea
                 layout.setTag(element);
                 break;
             case "table":
-                layout = new FrameLayout(context, null, 0);
-                parse(element, layout);
-                parent.addView(layout);
-                layout.setTag(element);
-                break;
-            case "tbody":
                 layout = new TableTagLayout(context, null);
                 parse(element, layout);
                 parent.addView(layout);
                 layout.setTag(element);
+                break;
+            case "thead":
+            case "tbody":
+//                layout = new TableTagLayout(context, null);
+//                parse(element, layout);
+//                parent.addView(layout);
+//                layout.setTag(element);
+                parse(element, parent);
                 break;
             case "tr":
                 layout = new TableRow(context, null);

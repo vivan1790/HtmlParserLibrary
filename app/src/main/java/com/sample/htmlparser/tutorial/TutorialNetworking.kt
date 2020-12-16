@@ -13,6 +13,11 @@ interface STTutorialContentApi {
     @GET("{subject}/{tutorial}")
     fun getTutorialContent(@Path("subject") subject : String,
                            @Path("tutorial") tutorial : String) : Call<String>
+
+    @GET("{subject}/{subject_div}/{tutorial}")
+    fun getTutorialContent(@Path("subject") subject : String,
+                           @Path("subject_div") subjectDivision : String,
+                           @Path("tutorial") tutorial : String) : Call<String>
 }
 
 class STTutorialRepository {
@@ -29,6 +34,21 @@ class STTutorialRepository {
     fun getTutorialContent(subject : String, tutorial : String) : MutableLiveData<String> {
         val contentLiveData : MutableLiveData<String> = MutableLiveData()
         tutorialContentApi.getTutorialContent(subject, tutorial)
+            .enqueue(object : retrofit2.Callback<String> {
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    contentLiveData.value = null
+                }
+
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    contentLiveData.value = response.body()
+                }
+            })
+        return contentLiveData
+    }
+
+    fun getTutorialContent(subject : String, subjectDivision : String, tutorial : String) : MutableLiveData<String> {
+        val contentLiveData : MutableLiveData<String> = MutableLiveData()
+        tutorialContentApi.getTutorialContent(subject, subjectDivision, tutorial)
             .enqueue(object : retrofit2.Callback<String> {
                 override fun onFailure(call: Call<String>, t: Throwable) {
                     contentLiveData.value = null

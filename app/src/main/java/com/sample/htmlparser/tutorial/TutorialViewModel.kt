@@ -11,6 +11,11 @@ class TutorialViewModel : ViewModel() {
 
     @SuppressLint("CheckResult")
     fun getTutorialContent(subject : String, tutorial : String) {
-        tutorialContentLiveData = tutorialRepository.getTutorialContent(subject, tutorial)
+        if (subject.contains('/')) {
+            val sub = subject.split("/")
+            tutorialContentLiveData = tutorialRepository.getTutorialContent(sub[0], sub[1], tutorial)
+        } else {
+            tutorialContentLiveData = tutorialRepository.getTutorialContent(subject, tutorial)
+        }
     }
 }

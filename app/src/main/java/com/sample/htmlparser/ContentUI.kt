@@ -43,8 +43,8 @@ class ArticleContentActivity : AppCompatActivity(), HtmlParser.OnParsingListener
         // Studytonight tutorial
         // iframe example : https://www.studytonight.com/python/exception-handling-python
         // youtube example : https://www.studytonight.com/dbms/database-normalization
-        val subject = "data-structures"
-        val tutorial = "bubble-sort"
+        val subject = "cpp/stl"
+        val tutorial = "stl-container-array"
         //subscribeToSTTutorialModel(subject, tutorial)
 
         // Studytonight test
@@ -54,7 +54,7 @@ class ArticleContentActivity : AppCompatActivity(), HtmlParser.OnParsingListener
 
         // Curious Article
         // 760, 289 : Text article .... 148 : Video article
-        val bid = "760";
+        val bid = "975";
         //subscribeToCuriousArticleModel(bid)
         contentTypeSpinner = findViewById(R.id.contentTypeSpinner)
         contentTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
