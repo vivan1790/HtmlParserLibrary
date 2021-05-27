@@ -416,7 +416,8 @@ public class HtmlParser implements Observable<HtmlParser.OnParsingListener>, Sea
                     }
                     break;
                 case TAG_CLASS:
-                    if (searchParam.equals(element.className())) {
+                    if (searchParam.equals(element.className())
+                            || element.className().contains(searchParam)) {
                         viewGroupList.add(viewGroup);
                     }
                     break;
