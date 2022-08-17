@@ -86,6 +86,7 @@ public class HtmlParser implements Observable<HtmlParser.OnParsingListener>, Sea
         styleHandler = new StyleHandler(getContext(), currentHtmlContent.getStyleToken());
         try {
             Document document = Jsoup.parse(htmlContent.getHtmlText());
+            removeComments(document);
             Element initialElement = (htmlContent.getInitialElementTagId() != null) ?
                     document.getElementById(htmlContent.getInitialElementTagId()) : document.body();
             parse(initialElement, mainLayout);
@@ -454,5 +455,17 @@ public class HtmlParser implements Observable<HtmlParser.OnParsingListener>, Sea
     private int getApplicableColor(int value) {
         String hexValue = Integer.toHexString(value);
         return Color.parseColor("#" + hexValue);
+    }
+
+    private static void removeComments(Node node) {
+        for (int i = 0; i < node.childNodeSize();) {
+            Node child = node.childNode(i);
+            if (child.nodeName().equals("#comment"))
+                child.remove();
+            else {
+                removeComments(child);
+                i++;
+            }
+        }
     }
 }

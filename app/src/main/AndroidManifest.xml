@@ -16,7 +16,8 @@
         <activity android:name=".ArticleContentActivity"
             android:screenOrientation="unspecified"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            tools:ignore="LockedOrientationActivity">
+            tools:ignore="LockedOrientationActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
